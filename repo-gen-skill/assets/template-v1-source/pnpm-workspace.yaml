@@ -32,5 +32,6 @@ catalogs:
   utils:
     zustand: 5.0.12
     clsx: 2.1.1
+    tailwind-merge: 3.5.0
   server:
     hono: 4.12.14
