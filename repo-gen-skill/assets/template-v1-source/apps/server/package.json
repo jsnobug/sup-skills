@@ -1,0 +1,17 @@
+{
+  "name": "server",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "check-types": "tsc --noEmit",
+    "start": "bun run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@monorepo-templates/types": "workspace:*",
+    "hono": "catalog:server"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:type",
+    "typescript": "catalog:build"
+  }
+}

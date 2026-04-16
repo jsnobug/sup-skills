@@ -1,0 +1,34 @@
+{
+  "name": "monorepo-templates",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "build:demo": "pnpm --filter client build",
+    "check-types": "turbo run check-types",
+    "dev": "turbo run dev",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "prepare": "husky",
+    "start:demo": "pnpm --filter server start"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "catalog:lint",
+    "@commitlint/config-conventional": "catalog:lint",
+    "husky": "catalog:lint",
+    "lint-staged": "catalog:lint",
+    "oxfmt": "catalog:lint",
+    "oxlint": "catalog:lint",
+    "turbo": "catalog:build",
+    "typescript": "catalog:build"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "pnpm run lint",
+    "*": "oxfmt --no-error-on-unmatched-pattern"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.13.1"
+}

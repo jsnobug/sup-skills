@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo Gen Skill"
+  short_description: "按模板生成初始化 monorepo"
+  default_prompt: "Use $repo-gen-skill to turn a natural-language repo request into a confirmed scaffold plan and then generate the repository from the built-in template."

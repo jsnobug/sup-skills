@@ -1,0 +1,68 @@
+:root {
+  --text: #5e5142;
+  --text-h: #1d1308;
+  --muted: #7d6f5d;
+  --bg: #efe3cf;
+  --bg-deep: #f8f3ea;
+  --border: rgba(74, 53, 32, 0.16);
+  --code-bg: rgba(255, 248, 238, 0.95);
+  --shadow: rgba(63, 35, 10, 0.12) 0 20px 40px -20px;
+  --sans: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --heading: Georgia, 'Times New Roman', serif;
+  --mono: 'Cascadia Code', Consolas, monospace;
+
+  font: 18px/1.6 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 36%),
+    linear-gradient(180deg, #efe3cf 0%, #ead8c0 100%);
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+h1 {
+  margin: 0 0 18px;
+  font-size: clamp(40px, 7vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.35;
+  padding: 4px 10px;
+  background: var(--code-bg);
+  color: var(--text-h);
+}
