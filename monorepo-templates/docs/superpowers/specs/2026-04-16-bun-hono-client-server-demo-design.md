@@ -13,6 +13,7 @@
 2. 服务端可以提供最小 API 给前端调用
 3. 前端构建后的 `dist` 可以由服务端直接托管
 4. 同一套前端代码在开发态和生产态都使用 `/api` 路径访问后端
+5. API 的共享 TypeScript 类型可以沉淀到 `packages/types`
 
 该 demo 的定位是模板起点，不是完整业务骨架。
 
@@ -28,6 +29,7 @@
 - 前端提供一个最小表单，请求 `POST /api/echo`
 - 开发态通过 Vite 代理 `/api` 到服务端
 - 生产态由服务端直接托管 `apps/client/dist`
+- 抽离最小共享 API 类型到 `packages/types`
 - 提供最小使用文档，说明开发态与生产态如何运行
 
 ### 2.2 本次不包含
@@ -35,7 +37,7 @@
 - 数据库
 - 登录鉴权
 - SSR
-- 前后端共享 SDK
+- 前后端共享请求 SDK
 - 复杂状态管理
 - 前端路由系统扩展
 - 部署脚本与容器化
@@ -91,14 +93,22 @@
 
 - 负责页面渲染
 - 使用浏览器 `fetch` 请求 `/api/*`
+- 消费 `packages/types` 中的响应类型
 - 不感知后端真实地址
 - 构建输出到 `dist`
 
 #### `apps/server`
 
 - 提供最小 API
+- 消费 `packages/types` 中的请求和响应类型
 - 在生产态托管 `apps/client/dist`
 - 对非 `/api` 请求执行静态资源返回或 `index.html` 回退
+
+#### `packages/types`
+
+- 提供本次 demo 使用的最小共享 API 类型
+- 仅包含 TypeScript 类型声明
+- 不承载运行时逻辑、校验器或请求封装
 
 ### 4.2 目录与职责边界
 
@@ -112,6 +122,8 @@
 - `apps/server/src/index.ts`
   - 定义 API 路由
   - 定义静态托管和 SPA fallback
+- `packages/types`
+  - 定义 `health`、`hello`、`echo` 的请求与响应类型
 - `apps/server` 下新增测试文件
   - 覆盖 API 行为
 - 根目录与各子包 `package.json`
@@ -141,6 +153,25 @@
 这样后续若前端增加路由，也不会因为刷新页面而 404。
 
 ## 6. API 设计
+
+### 6.0 共享类型约定
+
+本次将 API 相关类型抽离到 `packages/types`，供 `client` 与 `server` 共同使用。
+
+约束如下：
+
+- 只共享静态类型，不共享运行时实现
+- 服务端仍自行处理请求解析与参数校验
+- 前端仍直接使用 `fetch`，不新增 API client 封装层
+- 类型范围只覆盖本次 demo 的三个接口
+
+建议类型包括：
+
+- `HealthResponse`
+- `HelloResponse`
+- `EchoRequest`
+- `EchoResponse`
+- 如有需要，可补一个最小 `ApiErrorResponse`
 
 ### 6.1 `GET /api/health`
 
@@ -262,6 +293,10 @@
 
 测试重点放在行为，不测试内部实现细节。
 
+另外补充一个轻量约束：
+
+- `client` 和 `server` 应通过 `packages/types` 引用共享类型，避免各自重复声明
+
 ### 9.2 前端验证
 
 本次不引入前端测试框架。
@@ -305,13 +340,14 @@
 ## 11. 实施顺序
 
 1. 为服务端 API 编写失败测试
-2. 实现服务端 API
-3. 实现服务端静态托管与 SPA fallback
-4. 配置前端开发态代理
-5. 改造前端页面，接入 `hello` 与 `echo`
-6. 增加根目录和子包运行脚本
-7. 补最小 README 使用说明
-8. 运行测试与手动验证
+2. 建立 `packages/types` 的最小共享类型定义
+3. 实现服务端 API
+4. 实现服务端静态托管与 SPA fallback
+5. 配置前端开发态代理
+6. 改造前端页面，接入 `hello` 与 `echo`
+7. 增加根目录和子包运行脚本
+8. 补最小 README 使用说明
+9. 运行测试与手动验证
 
 ## 12. 验收标准
 
@@ -323,18 +359,19 @@
 4. 前端构建后，服务端能直接托管 `client/dist`
 5. 生产态访问单一服务端端口即可打开页面并访问 API
 6. 服务端最小测试通过
+7. `client` 与 `server` 的 API 类型来源于 `packages/types`
 
 ## 13. 风险与约束
 
 - `server` 目前基于 Bun，测试与生产启动方式要优先兼容 Bun 运行时
 - 静态托管路径需要从 `apps/server` 正确定位到 `apps/client/dist`
 - 当前仓库尚未补齐完整脚本，实施时需避免引入过重依赖
+- `packages/types` 当前为空，实施时需要补最小包结构与导出方式
 
 ## 14. 后续可扩展方向
 
-本次不实现，但后续可以基于该 demo 扩展：
+本次已经包含共享类型；后续可以继续扩展：
 
-- 抽离共享 API 类型到 `packages/types`
 - 增加前端路由
 - 增加更完整的 API 错误模型
 - 引入前端测试
